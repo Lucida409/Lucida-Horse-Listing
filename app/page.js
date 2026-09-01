@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Home() {
   return (
@@ -15,18 +16,36 @@ export default function Home() {
       <SearchBar />
 
       {/* Hero banner */}
-      <div className="glass-panel" style={{ padding: '2rem', margin: '2rem 0', textAlign: 'center' }}>
-        <h2 style={{ fontSize: '2rem', lineHeight: 1.3, fontWeight: 700 }}>
+      <div className="glass-panel" style={{ padding: '2rem', margin: '2rem 0', position: 'relative', overflow: 'hidden' }}>
+        <h2 style={{ fontSize: '2rem', lineHeight: 1.3, fontWeight: 700, position: 'relative', zIndex: 1 }}>
           Bringing You<br />Colour &amp;<br />Athleticism
         </h2>
+
+        <div style={{ position: 'relative', width: '90px', height: '90px', marginTop: '1rem' }}>
+          <Image
+            src="/Photoroom_20260831_162158.png"
+            alt="Lucida Farm logo"
+            fill
+            style={{ objectFit: 'contain' }}
+          />
+        </div>
+
+        <div style={{ position: 'relative', width: '100%', height: '220px', marginTop: '-1rem' }}>
+          <Image
+            src="/Photoroom_20260831_161514.png"
+            alt="Lucida Farm horse"
+            fill
+            style={{ objectFit: 'contain', objectPosition: 'right center' }}
+          />
+        </div>
       </div>
 
       {/* Horses For Sale / Sold buttons */}
       <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
-        <Link href="/for-sale" style={pillButtonStyle}>
+        <Link href="/for-sale" className="glass-panel" style={pillButtonStyle}>
           Horses For Sale
         </Link>
-        <Link href="/sold" style={pillButtonStyle}>
+        <Link href="/sold" className="glass-panel" style={pillButtonStyle}>
           Horses Sold
         </Link>
       </div>
@@ -36,20 +55,25 @@ export default function Home() {
         Quick Links (Horses for Sale)
       </p>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '2rem' }}>
-        <Link href="/for-sale?gender=stallion" style={pillButtonStyle}>Stallions</Link>
-        <Link href="/for-sale?gender=mare" style={pillButtonStyle}>Mares</Link>
-        <Link href="/for-sale?gender=filly" style={pillButtonStyle}>Fillies</Link>
-        <Link href="/for-sale?gender=colt" style={pillButtonStyle}>Colts</Link>
+        <Link href="/for-sale?gender=stallion" className="glass-panel" style={pillButtonStyle}>Stallions</Link>
+        <Link href="/for-sale?gender=mare" className="glass-panel" style={pillButtonStyle}>Mares</Link>
+        <Link href="/for-sale?gender=filly" className="glass-panel" style={pillButtonStyle}>Fillies</Link>
+        <Link href="/for-sale?gender=colt" className="glass-panel" style={pillButtonStyle}>Colts</Link>
       </div>
 
       {/* Footer */}
       <div className="glass-panel" style={{ padding: '1.5rem', fontSize: '0.95rem', lineHeight: 1.8 }}>
-        <p>🏠 Bloemfontein, Free State, South Africa</p>
-        <p style={{ marginTop: '1rem' }}>
-          👤 Agents:<br />
-          Joey: (+27) 79 019 3590<br />
-          Este: (+27) 73 838 8498<br />
-          Shelishah: (+27) 79 150 2146
+        <p style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+          <HomeIcon /> Bloemfontein, Free State, South Africa
+        </p>
+        <p style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', marginTop: '1rem' }}>
+          <span style={{ marginTop: '0.15rem' }}><PersonIcon /></span>
+          <span>
+            Agents:<br />
+            Joey: (+27) 79 019 3590<br />
+            Este: (+27) 73 838 8498<br />
+            Shelishah: (+27) 79 150 2146
+          </span>
         </p>
       </div>
     </main>
@@ -61,13 +85,10 @@ const pillButtonStyle = {
   display: 'block',
   textAlign: 'center',
   padding: '1rem',
-  background: 'rgba(255,255,255,0.08)',
-  backdropFilter: 'blur(10px)',
-  border: '1px solid rgba(255,255,255,0.15)',
-  borderRadius: '999px',
   color: '#fff',
   textDecoration: 'none',
   fontSize: '1.1rem',
+  borderRadius: '999px',
 };
 
 function NavMenu() {
@@ -109,5 +130,23 @@ function SearchBar() {
         }}
       />
     </form>
+  );
+}
+
+function HomeIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M3 11L12 4l9 7" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M5 10v9a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1v-9" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function PersonIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 21c0-4.5 3.5-7 8-7s8 2.5 8 7" strokeLinecap="round" />
+    </svg>
   );
 }
