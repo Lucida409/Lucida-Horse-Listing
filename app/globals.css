@@ -8,15 +8,22 @@
 
 body {
   font-family: 'Playfair Display', serif;
-  background: linear-gradient(135deg, #4a4f3a, #2e3323);
+  background:
+    radial-gradient(circle at 15% 5%, rgba(255, 255, 255, 0.16), transparent 45%),
+    radial-gradient(circle at 85% 95%, rgba(0, 0, 0, 0.35), transparent 55%),
+    linear-gradient(135deg, #5c614a, #262b1c);
+  background-attachment: fixed;
   color: #fff;
   min-height: 100vh;
 }
 
 .glass-panel {
   background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 24px;
+  box-shadow:
+    0 4px 30px rgba(0, 0, 0, 0.2),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15);
 }
