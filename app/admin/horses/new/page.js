@@ -1,142 +1,217 @@
-import Link from 'next/link';
-import Image from 'next/image';
+'use client';
 
-export default function Home() {
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase-browser';
+
+export default function AddHorse() {
+  const router = useRouter();
+  const supabase = createClient();
+
+  const [form, setForm] = useState({
+    name: '',
+    dob: '',
+    breed: '',
+    gender: 'stallion',
+    colour: '',
+    height: '',
+    registration_status: '',
+    training_status: '',
+    description: '',
+    sire_label: 'sired_by',
+    sire_name: '',
+    price: '',
+    status: 'for_sale',
+  });
+
+  const [horseImages, setHorseImages] = useState([]);
+  const [sirePhoto, setSirePhoto] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+
+  const updateField = (field, value) => setForm((f) => ({ ...f, [field]: value }));
+
+  const handleHorseImages = (e) => {
+    const files = Array.from(e.target.files).slice(0, 4);
+    setHorseImages(files);
+  };
+
+  const uploadFile = async (file, folder) => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExt}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('horse-images')
+      .upload(fileName, file);
+
+    if (uploadError) throw uploadError;
+
+    const { data } = supabase.storage.from('horse-images').getPublicUrl(fileName);
+    return data.publicUrl;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    if (!form.name || !form.dob || !form.breed) {
+      setError('Name, Date of Birth, and Breed are required.');
+      return;
+    }
+
+    setSaving(true);
+
+    try {
+      const imageUrls = [];
+      for (const file of horseImages) {
+        const url = await uploadFile(file, 'horses');
+        imageUrls.push(url);
+      }
+
+      let sirePhotoUrl = null;
+      if (sirePhoto) {
+        sirePhotoUrl = await uploadFile(sirePhoto, 'sires');
+      }
+
+      const { error: insertError } = await supabase.from('horses').insert({
+        name: form.name,
+        dob: form.dob,
+        breed: form.breed,
+        gender: form.gender,
+        colour: form.colour || null,
+        height: form.height || null,
+        registration_status: form.registration_status || null,
+        training_status: form.training_status || null,
+        description: form.description || null,
+        sire_label: form.sire_name ? form.sire_label : null,
+        sire_name: form.sire_name || null,
+        sire_photo_url: sirePhotoUrl,
+        image_urls: imageUrls.length > 0 ? imageUrls : null,
+        price: form.price ? Number(form.price) : null,
+        status: form.status,
+      });
+
+      if (insertError) throw insertError;
+
+      router.push('/admin');
+      router.refresh();
+    } catch (err) {
+      setError(err.message || 'Something went wrong. Please try again.');
+      setSaving(false);
+    }
+  };
+
   return (
     <main style={{ maxWidth: '480px', margin: '0 auto', padding: '1.5rem' }}>
-      {/* Top bar */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <NavMenu />
-        <h1 style={{ fontSize: '1.8rem', letterSpacing: '2px', textAlign: 'center', flex: 1 }}>
-          LUCIDA FARM
-        </h1>
-      </div>
+      <h1 style={{ textAlign: 'center', marginBottom: '1.5rem', fontSize: '1.6rem' }}>
+        Add Horse
+      </h1>
 
-      {/* Search bar */}
-      <SearchBar />
+      <form onSubmit={handleSubmit} className="glass-panel" style={{ padding: '1.5rem' }}>
+        <Field label="Name *">
+          <input style={inputStyle} value={form.name} onChange={(e) => updateField('name', e.target.value)} required />
+        </Field>
 
-      {/* Hero banner */}
-      <div className="glass-panel" style={{ padding: '2rem', margin: '2rem 0', position: 'relative', overflow: 'hidden' }}>
-        <h2 style={{ fontSize: '2rem', lineHeight: 1.3, fontWeight: 700, position: 'relative', zIndex: 1 }}>
-          Bringing You<br />Colour &amp;<br />Athleticism
-        </h2>
-        <div style={{ position: 'relative', width: '100%', height: '220px', marginTop: '1rem' }}>
-          <Image
-            src="/hero-horse.png"
-            alt="Lucida Farm horse"
-            fill
-            style={{ objectFit: 'contain', objectPosition: 'right center' }}
-          />
-        </div>
-      </div>
+        <Field label="Date of Birth *">
+          <input type="date" style={inputStyle} value={form.dob} onChange={(e) => updateField('dob', e.target.value)} required />
+        </Field>
 
-      {/* Horses For Sale / Sold buttons */}
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
-        <Link href="/for-sale" className="glass-panel" style={pillButtonStyle}>
-          Horses For Sale
-        </Link>
-        <Link href="/sold" className="glass-panel" style={pillButtonStyle}>
-          Horses Sold
-        </Link>
-      </div>
+        <Field label="Breed *">
+          <input style={inputStyle} value={form.breed} onChange={(e) => updateField('breed', e.target.value)} required />
+        </Field>
 
-      {/* Quick links */}
-      <p style={{ textAlign: 'center', marginBottom: '1rem', opacity: 0.9 }}>
-        Quick Links (Horses for Sale)
-      </p>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '2rem' }}>
-        <Link href="/for-sale?gender=stallion" className="glass-panel" style={pillButtonStyle}>Stallions</Link>
-        <Link href="/for-sale?gender=mare" className="glass-panel" style={pillButtonStyle}>Mares</Link>
-        <Link href="/for-sale?gender=filly" className="glass-panel" style={pillButtonStyle}>Fillies</Link>
-        <Link href="/for-sale?gender=colt" className="glass-panel" style={pillButtonStyle}>Colts</Link>
-      </div>
+        <Field label="Gender">
+          <select style={inputStyle} value={form.gender} onChange={(e) => updateField('gender', e.target.value)}>
+            <option value="stallion">Stallion</option>
+            <option value="mare">Mare</option>
+            <option value="filly">Filly</option>
+            <option value="colt">Colt</option>
+          </select>
+        </Field>
 
-      {/* Footer */}
-      <div className="glass-panel" style={{ padding: '1.5rem', fontSize: '0.95rem', lineHeight: 1.8 }}>
-        <p style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-          <HomeIcon /> Bloemfontein, Free State, South Africa
-        </p>
-        <p style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', marginTop: '1rem' }}>
-          <span style={{ marginTop: '0.15rem' }}><PersonIcon /></span>
-          <span>
-            Agents:<br />
-            Joey: (+27) 79 019 3590<br />
-            Este: (+27) 73 838 8498<br />
-            Shelishah: (+27) 79 150 2146
-          </span>
-        </p>
-      </div>
+        <Field label="Colour">
+          <input style={inputStyle} value={form.colour} onChange={(e) => updateField('colour', e.target.value)} />
+        </Field>
+
+        <Field label="Height / Estimated mature height">
+          <input style={inputStyle} value={form.height} onChange={(e) => updateField('height', e.target.value)} />
+        </Field>
+
+        <Field label="Registration Status">
+          <input style={inputStyle} value={form.registration_status} onChange={(e) => updateField('registration_status', e.target.value)} />
+        </Field>
+
+        <Field label="Training Status">
+          <input style={inputStyle} value={form.training_status} onChange={(e) => updateField('training_status', e.target.value)} />
+        </Field>
+
+        <Field label="Description">
+          <textarea style={{ ...inputStyle, minHeight: '100px' }} value={form.description} onChange={(e) => updateField('description', e.target.value)} />
+        </Field>
+
+        <Field label="Sired by / In foal to">
+          <select style={inputStyle} value={form.sire_label} onChange={(e) => updateField('sire_label', e.target.value)}>
+            <option value="sired_by">Sired by</option>
+            <option value="in_foal_to">In foal to</option>
+          </select>
+        </Field>
+
+        <Field label="Sire / In foal to — Name">
+          <input style={inputStyle} value={form.sire_name} onChange={(e) => updateField('sire_name', e.target.value)} />
+        </Field>
+
+        <Field label="Sire / In foal to — Photo">
+          <input type="file" accept="image/*" style={inputStyle} onChange={(e) => setSirePhoto(e.target.files[0] || null)} />
+        </Field>
+
+        <Field label="Horse Photos (1–4)">
+          <input type="file" accept="image/*" multiple style={inputStyle} onChange={handleHorseImages} />
+          {horseImages.length > 0 && (
+            <p style={{ fontSize: '0.85rem', opacity: 0.8, marginTop: '-0.8rem', marginBottom: '1.2rem' }}>
+              {horseImages.length} photo{horseImages.length > 1 ? 's' : ''} selected
+            </p>
+          )}
+        </Field>
+
+        <Field label="Selling Price (R)">
+          <input type="number" style={inputStyle} value={form.price} onChange={(e) => updateField('price', e.target.value)} />
+        </Field>
+
+        <Field label="Status">
+          <select style={inputStyle} value={form.status} onChange={(e) => updateField('status', e.target.value)}>
+            <option value="for_sale">For Sale</option>
+            <option value="sold">Sold</option>
+          </select>
+        </Field>
+
+        {error && <p style={{ color: '#ffb3b3', marginBottom: '1rem' }}>{error}</p>}
+
+        <button type="submit" disabled={saving} style={buttonStyle}>
+          {saving ? 'Saving…' : 'Add Horse'}
+        </button>
+      </form>
     </main>
   );
 }
 
-const pillButtonStyle = {
-  flex: 1,
-  display: 'block',
-  textAlign: 'center',
-  padding: '1rem',
-  color: '#fff',
-  textDecoration: 'none',
-  fontSize: '1.1rem',
-  borderRadius: '999px',
+function Field({ label, children }) {
+  return (
+    <div style={{ marginBottom: '1.2rem' }}>
+      <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.9rem', opacity: 0.85 }}>
+        {label}
+      </label>
+      {children}
+    </div>
+  );
+}
+
+const inputStyle = {
+  width: '100%', padding: '0.7rem',
+  background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)',
+  borderRadius: '10px', color: '#fff', fontFamily: 'inherit', fontSize: '1rem',
 };
-
-function NavMenu() {
-  return (
-    <details style={{ position: 'relative' }}>
-      <summary style={{ listStyle: 'none', cursor: 'pointer', fontSize: '1.5rem' }}>☰</summary>
-      <div className="glass-panel" style={{
-        position: 'absolute', top: '2.5rem', left: 0, zIndex: 10,
-        padding: '0.5rem', minWidth: '180px'
-      }}>
-        <Link href="/for-sale" style={navLinkStyle}>Horses For Sale</Link>
-        <Link href="/sold" style={navLinkStyle}>Horses Sold</Link>
-        <Link href="/admin/login" style={navLinkStyle}>Admin</Link>
-      </div>
-    </details>
-  );
-}
-
-const navLinkStyle = {
-  display: 'block',
-  padding: '0.6rem 0.8rem',
-  color: '#fff',
-  textDecoration: 'none',
+const buttonStyle = {
+  width: '100%', padding: '0.9rem', background: 'rgba(255,255,255,0.9)',
+  color: '#333', border: 'none', borderRadius: '999px', fontSize: '1rem',
+  fontFamily: 'inherit', cursor: 'pointer',
 };
-
-function SearchBar() {
-  return (
-    <form action="/search" method="get" className="glass-panel" style={{
-      display: 'flex', alignItems: 'center', padding: '0.9rem 1.2rem', gap: '0.6rem'
-    }}>
-      <span>🔍</span>
-      <input
-        type="text"
-        name="q"
-        placeholder="Search name, colour, gender"
-        style={{
-          background: 'transparent', border: 'none', outline: 'none',
-          color: '#fff', fontFamily: 'inherit', fontSize: '1rem', flex: 1
-        }}
-      />
-    </form>
-  );
-}
-
-function HomeIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <path d="M3 11L12 4l9 7" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M5 10v9a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1v-9" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function PersonIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <circle cx="12" cy="8" r="4" />
-      <path d="M4 21c0-4.5 3.5-7 8-7s8 2.5 8 7" strokeLinecap="round" />
-    </svg>
-  );
-}
