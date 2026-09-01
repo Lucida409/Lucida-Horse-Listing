@@ -3,6 +3,7 @@ import HorseCard from '@/components/HorseCard';
 import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function ForSalePage({ searchParams }) {
   const gender = searchParams?.gender;
