@@ -17,14 +17,14 @@ export default function Home() {
 
       {/* Hero banner */}
       <div className="glass-panel" style={{
-        padding: '2rem', margin: '2rem 0', position: 'relative', overflow: 'hidden',
-        display: 'flex', alignItems: 'center', gap: '0.5rem', minHeight: '260px'
+        padding: '1.75rem', margin: '2rem 0',
+        display: 'grid', gridTemplateColumns: '54% 46%', alignItems: 'center', gap: '0.25rem'
       }}>
-        <div style={{ flex: '0 0 42%' }}>
-          <h2 style={{ fontSize: '1.7rem', lineHeight: 1.3, fontWeight: 700 }}>
+        <div>
+          <h2 style={{ fontSize: '1.55rem', lineHeight: 1.3, fontWeight: 700, whiteSpace: 'nowrap' }}>
             Bringing You<br />Colour &amp;<br />Athleticism
           </h2>
-          <div style={{ position: 'relative', width: '70px', height: '70px', marginTop: '0.8rem' }}>
+          <div style={{ position: 'relative', width: '65px', height: '65px', marginTop: '0.7rem' }}>
             <Image
               src="/Photoroom_20260831_162158.png"
               alt="Lucida Farm logo"
@@ -34,7 +34,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div style={{ flex: '1 1 58%', position: 'relative', height: '240px' }}>
+        <div style={{ position: 'relative', height: '190px' }}>
           <Image
             src="/Photoroom_20260831_161514.png"
             alt="Lucida Farm horse"
