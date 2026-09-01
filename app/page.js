@@ -16,32 +16,14 @@ export default function Home() {
       <SearchBar />
 
       {/* Hero banner */}
-      <div className="glass-panel" style={{
-        padding: '1.5rem', margin: '2rem 0',
-        display: 'grid', gridTemplateColumns: '54% 46%', alignItems: 'end', gap: '0.25rem'
-      }}>
-        <div>
-          <h2 style={{ fontSize: '1.55rem', lineHeight: 1.3, fontWeight: 700, whiteSpace: 'nowrap' }}>
-            Bringing You<br />Colour &amp;<br />Athleticism
-          </h2>
-          <div style={{ position: 'relative', width: '65px', height: '65px', marginTop: '0.7rem' }}>
-            <Image
-              src="/Photoroom_20260831_162158.png"
-              alt="Lucida Farm logo"
-              fill
-              style={{ objectFit: 'contain' }}
-            />
-          </div>
-        </div>
-
-        <div style={{ position: 'relative', height: '160px' }}>
-          <Image
-            src="/Photoroom_20260831_161514.png"
-            alt="Lucida Farm horse"
-            fill
-            style={{ objectFit: 'contain', objectPosition: 'right bottom' }}
-          />
-        </div>
+      <div className="glass-panel" style={{ margin: '2rem 0', overflow: 'hidden', position: 'relative', aspectRatio: '1263 / 623' }}>
+        <Image
+          src="/Search%20name%2C%20colour%2C%20gender.jpeg"
+          alt="Bringing You Colour & Athleticism — Lucida Farm"
+          fill
+          style={{ objectFit: 'cover' }}
+          priority
+        />
       </div>
 
       {/* Horses For Sale / Sold buttons */}
