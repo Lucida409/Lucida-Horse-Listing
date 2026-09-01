@@ -17,8 +17,8 @@ export default function Home() {
 
       {/* Hero banner */}
       <div className="glass-panel" style={{
-        padding: '1.75rem', margin: '2rem 0',
-        display: 'grid', gridTemplateColumns: '54% 46%', alignItems: 'center', gap: '0.25rem'
+        padding: '1.5rem', margin: '2rem 0',
+        display: 'grid', gridTemplateColumns: '54% 46%', alignItems: 'end', gap: '0.25rem'
       }}>
         <div>
           <h2 style={{ fontSize: '1.55rem', lineHeight: 1.3, fontWeight: 700, whiteSpace: 'nowrap' }}>
@@ -34,12 +34,12 @@ export default function Home() {
           </div>
         </div>
 
-        <div style={{ position: 'relative', height: '190px' }}>
+        <div style={{ position: 'relative', height: '160px' }}>
           <Image
             src="/Photoroom_20260831_161514.png"
             alt="Lucida Farm horse"
             fill
-            style={{ objectFit: 'contain', objectPosition: 'right center' }}
+            style={{ objectFit: 'contain', objectPosition: 'right bottom' }}
           />
         </div>
       </div>
