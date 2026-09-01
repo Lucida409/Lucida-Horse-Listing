@@ -16,21 +16,25 @@ export default function Home() {
       <SearchBar />
 
       {/* Hero banner */}
-      <div className="glass-panel" style={{ padding: '2rem', margin: '2rem 0', position: 'relative', overflow: 'hidden' }}>
-        <h2 style={{ fontSize: '2rem', lineHeight: 1.3, fontWeight: 700, position: 'relative', zIndex: 1 }}>
-          Bringing You<br />Colour &amp;<br />Athleticism
-        </h2>
-
-        <div style={{ position: 'relative', width: '90px', height: '90px', marginTop: '1rem' }}>
-          <Image
-            src="/Photoroom_20260831_162158.png"
-            alt="Lucida Farm logo"
-            fill
-            style={{ objectFit: 'contain' }}
-          />
+      <div className="glass-panel" style={{
+        padding: '2rem', margin: '2rem 0', position: 'relative', overflow: 'hidden',
+        display: 'flex', alignItems: 'center', gap: '0.5rem', minHeight: '260px'
+      }}>
+        <div style={{ flex: '0 0 42%' }}>
+          <h2 style={{ fontSize: '1.7rem', lineHeight: 1.3, fontWeight: 700 }}>
+            Bringing You<br />Colour &amp;<br />Athleticism
+          </h2>
+          <div style={{ position: 'relative', width: '70px', height: '70px', marginTop: '0.8rem' }}>
+            <Image
+              src="/Photoroom_20260831_162158.png"
+              alt="Lucida Farm logo"
+              fill
+              style={{ objectFit: 'contain' }}
+            />
+          </div>
         </div>
 
-        <div style={{ position: 'relative', width: '100%', height: '220px', marginTop: '-1rem' }}>
+        <div style={{ flex: '1 1 58%', position: 'relative', height: '240px' }}>
           <Image
             src="/Photoroom_20260831_161514.png"
             alt="Lucida Farm horse"
@@ -119,7 +123,7 @@ function SearchBar() {
     <form action="/search" method="get" className="glass-panel" style={{
       display: 'flex', alignItems: 'center', padding: '0.9rem 1.2rem', gap: '0.6rem'
     }}>
-      <span>🔍</span>
+      <SearchIcon />
       <input
         type="text"
         name="q"
@@ -133,20 +137,28 @@ function SearchBar() {
   );
 }
 
+function SearchIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <circle cx="10.5" cy="10.5" r="6.5" />
+      <line x1="20" y1="20" x2="15.3" y2="15.3" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 function HomeIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <path d="M3 11L12 4l9 7" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M5 10v9a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1v-9" strokeLinecap="round" strokeLinejoin="round" />
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 3.5L3 11h2v9a1 1 0 001 1h5v-7h2v7h5a1 1 0 001-1v-9h2L12 3.5z" />
     </svg>
   );
 }
 
 function PersonIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <circle cx="12" cy="8" r="4" />
-      <path d="M4 21c0-4.5 3.5-7 8-7s8 2.5 8 7" strokeLinecap="round" />
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+      <circle cx="12" cy="7.5" r="4.5" />
+      <path d="M4 21c0-5 3.6-8 8-8s8 3 8 8a1 1 0 01-1 1H5a1 1 0 01-1-1z" />
     </svg>
   );
 }
